@@ -6,13 +6,7 @@ import java.util.List;
 public class TfIdf 
 {
 	private static ArrayList<String[]> docterms = new ArrayList<String[]>();
-	
-    /**
-     * Calculates the tf of term termToCheck
-     * @param totalterms : Array of all the words under processing document
-     * @param termToCheck : term of which tf is to be calculated.
-     * @return tf(term frequency) of term termToCheck
-     */
+	    
     public double tfCalculator(String[] totalterms, String termToCheck) 
     {
         double count = 0;  //to count the overall occurrence of the term termToCheck
@@ -32,12 +26,6 @@ public class TfIdf
         
     }
 
-    /**
-     * Calculates idf of term termToCheck
-     * @param allTerms : all the terms of all the documents
-     * @param termToCheck
-     * @return idf(inverse document frequency) score
-     */
     public double idfCalculator(List allTerms, String termToCheck) 
     {
         double count = 0;
@@ -70,7 +58,6 @@ public class TfIdf
         }
         
         //return 1 + Math.log(allTerms.size() / count);
-        return idf;
-        
+        return idf;       
     }
 }

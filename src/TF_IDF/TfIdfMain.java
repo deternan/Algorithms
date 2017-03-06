@@ -4,49 +4,40 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class TfIdfMain 
 {
-	//private static List abc = new ArrayList<>();	
+	// All video id 
+	private Vector all_video;
+	// TF-IDF
 	private static ArrayList<double[]> tfidf_list = new ArrayList<double[]>();
 	private static ArrayList<String[]> allterms = new ArrayList<String[]>();
 	private static ArrayList<String[]> termsDocs_terms = new ArrayList<String[]>();
+	// Output
 	
-	 public static void main(String args[]) throws FileNotFoundException, IOException
-	 {
-		 DocumentParser dp = new DocumentParser();
-		 dp.parseFiles("D:\\Java code\\Test\\Document\\"); // give the location of source file
-		 dp.tfIdfCalculator(); //calculates tfidf
+	public TfIdfMain() throws Exception
+	{
+		 DocumentParser_Chinese dp_ch = new DocumentParser_Chinese();
+		 dp_ch.tfIdfCalculator();
 		 
 		 
-		 //double[] stringArray2 = stringList.toArray( new String[0] );
-		 //abc = dp.Return_tfidfDocsVector();
-		 //System.out.println(abc.get(0).length);
-		 
-		 tfidf_list = (ArrayList<double[]>) dp.Return_tfidfDocsVector();
-		 System.out.println(tfidf_list.get(0).length);
-		 System.out.println(tfidf_list.get(1).length);
-		 for(int i=0; i<tfidf_list.get(0).length; i++)
+		 // tfidf list
+		 tfidf_list = (ArrayList<double[]>) dp_ch.Return_tfidfDocsVector();			 
+		 for(int i=0; i<tfidf_list.size(); i++)
 		 {
-			 System.out.println(i+"	"+tfidf_list.get(0)[i]);
+			//for(int j=0; j<tfidf_list.get(i).length; j++)
+			{
+				//System.out.print(tfidf_list.get(i)[j]+",");
+			}
+			//System.out.println();
 		 }
-		 
-		 termsDocs_terms = (ArrayList<String[]>) dp.Return_termsDocsArray();
-		 System.out.println(termsDocs_terms.get(0).length);
-		 System.out.println(termsDocs_terms.get(1).length);
-		 //for(int i=0; i<termsDocs_terms.get(0).length; i++)
-		 {
-			 //System.out.println(i+"	"+termsDocs_terms.get(0)[i]);
-		 }
-		 
-		 //termsDocsArray.size()
-		 /*
-		 allterms = (ArrayList<String[]>) dp.Return_allTerms();
-		 System.out.println(allterms.size());
-		 for(int i=0; i<allterms.size(); i++)
-		 {
-			 System.out.println(allterms.get(i));
-		 }
-		 */
+		 	 
+	}
+	
+	 public static void main(String args[]) throws Exception
+	 {	
+		 TfIdfMain tfidf = new TfIdfMain(); 
 	 }
+	 
 }
