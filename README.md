@@ -13,5 +13,12 @@ This code we used genetic algorithm as feature selection to optimized dataset, i
 <h1>Classification</h1>
 
 ## K-nearest neighbor
+A non-parametric method used for classification and regression. The input consists of the k closest training examples in the feature space. The output depends on whether k-NN is used for classification or regression.
+
 
 ## Support Vectore Machine
+
+
+### Interface
+
+we developed a Swing toolkit to exercise both of K-NN and SVM algorithms. It provides user a friendly control interface to carry out their classfied dataset. 
