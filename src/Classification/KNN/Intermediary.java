@@ -30,12 +30,7 @@ public class Intermediary extends Parameters
 	}
 	
 	public void get_paramater(String datamodel_fileParent, String datamodel_fileName) throws IOException
-	{		
-		this.chooseMethod = chooseMethod;
-		this.datamodel_fileParent = datamodel_fileParent;	
-		this.datamodel_fileName = datamodel_fileName;
-		this.K_num = K;
-		
+	{				
 		if(datamodel_fileName.endsWith(".arff")){
 			datamodel_filePath = "";			
 			datamodel_filePath = this.datamodel_fileParent.concat(datamodel_fileName);
