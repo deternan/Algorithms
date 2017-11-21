@@ -33,7 +33,7 @@ public class Intermediary extends Parameters
 	{				
 		if(datamodel_fileName.endsWith(".arff")){
 			datamodel_filePath = "";			
-			datamodel_filePath = this.datamodel_fileParent.concat(datamodel_fileName);
+			datamodel_filePath = datamodel_fileParent.concat(datamodel_fileName);
 			combine();
 		}
 		
