@@ -22,3 +22,13 @@ A non-parametric method used for classification and regression. The input consis
 ### Interface
 
 we developed a Swing toolkit to exercise both of K-NN and SVM algorithms. It provides user a friendly control interface to carry out their classfied dataset. 
+
+## Package
+
+### nlp-lang
+中文工具集，包括中文简繁体转换、拼音转换以及中文分词。
+
+
+--- 
+
+last update: January 10, 2019 01:45 AM
