@@ -1,10 +1,10 @@
 package Evaluation;
 
 /*
- * Eavaluation 
+ * WER (Word Error Rate) Evaluation 
  * 
  * version: January 10, 2019 09:21 AM
- * Last revision: January 10, 2019 05:21 PM
+ * Last revision: January 14, 2019 09:49 AM
  * 
  * Author : Chao-Hsuan Ke
  * Institute: Delta Research Center
@@ -31,24 +31,25 @@ public class WordErrorRate {
 	private int[][][] predecessorIndexes;	//stores the index where the value at memoTable[i][j] came from (diagonal, above or left)
 
 	private int gapPenalty;
-	private int vowelVowelMismatchPenalty;
-	private int consonantConsonantMismatchPenalty;
+//	private int vowelVowelMismatchPenalty;
+//	private int consonantConsonantMismatchPenalty;
 	private int vowelConsonantMismatchPenalty;
-	private int numberNumberMismatchPenalty;
+//	private int numberNumberMismatchPenalty;
 
 	String seq1Aligned = ""; 	//Holds the actual sequence with gaps added
 	String seq2Aligned = "";
 
-	private String orifolder = "D:\\gitlab\\CoreTech_SpeechtoText\\data\\20190109 Chinese video\\subtitle\\pure text\\1\\";
-	private String orifile = "1. 一句話讓你知道你有多特別！｜Why學生.srt.output.txt";
-	private String tranfolder = "D:\\gitlab\\CoreTech_SpeechtoText\\data\\20190109 Chinese video\\translation\\1. 一句話讓你知道你有多特別\\text\\";
-	private String tranfile = "iFlytek_output - revised.txt";
+	private String orifolder = "";
+	private String orifile = "";
+	private String tranfolder = "";
+	private String tranfile = "";
 	private BufferedReader oribfr;	
 	private BufferedReader tranbfr;
 	
 	private Vector ori_vec = new Vector();
 	private Vector tran_vec = new Vector();
 	
+	int substitutionsCount = 0;
 	int delCount = 0;
 	int insertCount = 0;
 	int correctCount = 0;
@@ -70,10 +71,10 @@ public class WordErrorRate {
 		
 		// this(2, 1, 1, 3, 1);
 		this.gapPenalty = 2;
-		this.vowelVowelMismatchPenalty = 1;
-		this.consonantConsonantMismatchPenalty = 1;
+//		this.vowelVowelMismatchPenalty = 1;
+//		this.consonantConsonantMismatchPenalty = 1;
 		this.vowelConsonantMismatchPenalty = 3;
-		this.numberNumberMismatchPenalty = 1;
+//		this.numberNumberMismatchPenalty = 1;
 		
 		// ori file
 		String Line = "";
@@ -81,9 +82,10 @@ public class WordErrorRate {
 		oribfr = new BufferedReader(fr);
 				
 		while((Line = oribfr.readLine())!=null)
-		{					
-			//System.out.println(Line);
-			ori_vec.add(Line);
+		{								
+			ori_vec.add(Remove_nonChineseSymbol(Line));
+			//ori_vec.add(Line);
+			
 		}
 		fr.close();
 		oribfr.close();
@@ -93,37 +95,37 @@ public class WordErrorRate {
 		tranbfr = new BufferedReader(tranfr);
 				
 		while((Line = tranbfr.readLine())!=null)
-		{					
-			//System.out.println(Line);
-			tran_vec.add(Line);
+		{								
+			tran_vec.add(Remove_nonChineseSymbol(Line));
+			//tran_vec.add(Line);
 		}
 		tranfr.close();
 		tranbfr.close();
 		
 		String oriStr = " ";
 		String tranStr = " ";
-		//System.out.println(ori_vec.size()+"	"+tran_vec.size());
+		
 		for(int i=0; i<ori_vec.size(); i++)
 		{
+			substitutionsCount = 0;
 			delCount = 0;
 			insertCount = 0;
 			correctCount = 0;
-			
-			//System.out.println(ori_vec.get(i)+"	"+tran_vec.get(i));
+						
 			if(ori_vec.get(i).toString().length() == 0) {
 				oriStr = " ";
 			}else {
-				oriStr = " "+ori_vec.get(i).toString();
+				oriStr = " "+ori_vec.get(i).toString().trim();
 			}
 			if(tran_vec.get(i).toString().length() == 0) {
 				tranStr = " ";
 			}else {
-				tranStr = " "+tran_vec.get(i).toString();
-			}
-			//System.out.println(ori_vec.get(i)+"	"+tran_vec.get(i));
-			calculateAndPrintOptimalAlignment(oriStr, tranStr);
-				
-			WER(delCount, insertCount, correctCount, oriStr, tranStr);
+				tranStr = " "+tran_vec.get(i).toString().trim();
+			}			
+			
+			calcOptimalAlignment(oriStr, tranStr, true);
+			
+			WER(substitutionsCount, delCount, insertCount, correctCount, oriStr, tranStr);
 		}
 		
 		System.out.println("-------------------------------------------------------");
@@ -132,12 +134,8 @@ public class WordErrorRate {
 		System.out.println("WER average: "+ WERrateAverage);
 	}
 
-	public void calculateAndPrintOptimalAlignment(String seq1, String seq2){
-		//System.out.println(seq1+"	"+seq2);
-		calcOptimalAlignment(seq1, seq2, true);
-	}
-
-	public void calcOptimalAlignment(String sequence1Original, String sequence2Original, boolean printResults) {
+	private void calcOptimalAlignment(String sequence1Original, String sequence2Original, boolean printResults) 
+	{
 		//String seq1 = sanitizeSequence(sequence1Original);
 		//String seq2 = sanitizeSequence(sequence2Original);
 		String seq1 = sequence1Original;
@@ -223,10 +221,13 @@ public class WordErrorRate {
 //		}
 //	}
 
+	/*@
+	 * 	seq1 = oriStr,
+	 * seq1 = tranStr 
+	 */				 
 	//Retrace the memoTable to find the actual alignment, not just the minimum cost
 	private void findAlignment(String seq1, String seq2, int[][] memoTable) {
 		
-
 		seq1Aligned = "";
 		seq2Aligned = "";
 		
@@ -273,6 +274,8 @@ public class WordErrorRate {
 		int insertCount = numberofinsertions(seq1Aligned, seq2Aligned);
 		// number of deletions
 		int delCount = numberofdeletions(seq1Aligned, seq2Aligned);
+		
+		substitutionsCount = seq1.length() - correctCount - 1;
 		
 //		System.out.println("number of correct words	"+correctCount);
 //		System.out.println("number of insertions	"+insertCount);
@@ -364,47 +367,32 @@ public class WordErrorRate {
 	{
 		Vector split_ori = new Vector();
 		Vector split_tran = new Vector();
-		split_ori = Chinese_Split_Correct(ori);
-		split_tran = Chinese_Split_Correct(tran);
-		
+		//split_ori = Chinese_Split_Correct(ori);
+		//split_tran = Chinese_Split_Correct(tran);
+		split_ori = Chinese_Split(ori);
+		split_tran = Chinese_Split(tran);		
 		Vector correctStr = new Vector();
-		
-		//System.out.println(split_ori.size()+"	"+split_tran.size());
-		
+			
+		int errorCount = 0;
 		
 		for(int i=0; i<split_ori.size(); i++)
-		{
+		{			
 			for(int j=0; j<split_tran.size(); j++) {
 				if(split_ori.get(i).toString().equalsIgnoreCase(split_tran.get(j).toString())) {
 					correctCount++;
 					correctStr.add(split_ori.get(i));
+					
 					break;
 				}
-			}
-		}
-		
-		//System.out.println(split_ori.size()+"	"+correctCount);
-		
-		return correctCount;
-	}
-	
-	private Vector Chinese_Split_Correct(String input)
-	{
-		int cha_num = 2;
-		Vector split_vec = new Vector();
-		// Remove Symbol
-		String inputStr = Remove_nonChineseSymbol(input);		
-
-		// Chinese Character split
-		List<String> splitStringList = chineseSplitFunction(inputStr, cha_num);
-		for (String split : splitStringList) {
-			//System.out.println(split.trim());
-			if(split.equalsIgnoreCase(GAP_CHAR) == false) {
-				split_vec.add(split.trim());
 			}			
 		}
 		
-		return split_vec; 
+		errorCount = split_ori.size() - correctCount;
+		
+		//System.out.println(split_ori.size()+"	"+correctCount+"	"+errorCount);
+		//System.out.println(split_ori.size()+"	"+correctCount);
+		
+		return correctCount;
 	}
 	
 	private Vector Chinese_Split(String input)
@@ -416,11 +404,8 @@ public class WordErrorRate {
 
 		// Chinese Character split
 		List<String> splitStringList = chineseSplitFunction(inputStr, cha_num);
-		for (String split : splitStringList) {
-			//System.out.println(split.trim());
-			{
-				split_vec.add(split.trim());
-			}			
+		for (String split : splitStringList) {						
+			split_vec.add(split.trim());					
 		}
 		
 		return split_vec; 
@@ -467,13 +452,14 @@ public class WordErrorRate {
 		return str;
 	}
 	
-	private void WER(int D, int I, int C, String ori, String tran)
+	private void WER(int S, int D, int I, int C, String ori, String tran)
 	{
 		double WERrate = 0;
 		
-		WERrate = (Double.valueOf(D)+Double.valueOf(I))/(Double.valueOf(D)+Double.valueOf(C));
+		//WERrate = (Double.valueOf(D)+Double.valueOf(I))/(Double.valueOf(D)+Double.valueOf(C));
+		WERrate = (Double.valueOf(D)+Double.valueOf(I)+Double.valueOf(S))/(Double.valueOf(D)+Double.valueOf(C)+Double.valueOf(S));
 		System.out.println("Aligning "+ ori+"	"+tran);
-		System.out.println(D+"	"+I+"	"+C);
+		System.out.println(ori.length()+"	"+tran.length()+"	"+S+"	"+D+"	"+I+"	"+C);
 		System.out.println(WERrate+"\n");
 		
 		if(WERrate>=0) {
