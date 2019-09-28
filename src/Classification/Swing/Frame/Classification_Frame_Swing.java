@@ -81,7 +81,7 @@ public class Classification_Frame_Swing extends javax.swing.JFrame implements Ac
 	private double cost;
 	private double gammaList[];
 	private double costList[];
-	private int[] chooseMethod;	// ¸m¤J¦U­Ó¤èªk
+	private int[] chooseMethod;	// ï¿½mï¿½Jï¿½Uï¿½Ó¤ï¿½k
 	// KNN
 	private int K_ori=1;
 	private int K;
@@ -89,7 +89,7 @@ public class Classification_Frame_Swing extends javax.swing.JFrame implements Ac
 	private int seed_num = 20;
 	// Fitness Choice
 	private int F_choice=1;		// KNN
-	//	Set BorderLine  (®Ø½u)
+	//	Set BorderLine  (ï¿½Ø½u)
 	Border blackLine = BorderFactory.createLineBorder(Color.black);
 	
 	private static String[] files_name_array;
@@ -134,7 +134,7 @@ public class Classification_Frame_Swing extends javax.swing.JFrame implements Ac
 							try {
 								II.get_paramater(fileParent, fileName, chooseMethod, gammaList, costList, K, seed_num);
 							} catch (IOException e1) {
-								// TODO ¦Û°Ê²£¥Í catch °Ï¶ô
+								// TODO ï¿½Û°Ê²ï¿½ï¿½ï¿½ catch ï¿½Ï¶ï¿½
 								e1.printStackTrace();
 							}
 							
@@ -465,11 +465,11 @@ public class Classification_Frame_Swing extends javax.swing.JFrame implements Ac
 		if(n == JFileChooser.APPROVE_OPTION)
 		{
 			File file = jfc.getSelectedFile();
-			fileParent = file.getParent() + "\\";
+			fileParent = file.getParent() + "/";
 			fileName = file.getName();
 		}
 		
-		System.out.println("ÀÉ®×¦WºÙ:"+fileName);
+		System.out.println("ï¿½É®×¦Wï¿½ï¿½:"+fileName);
 	}
 	
 	private void gammaListSet(double gamma)
